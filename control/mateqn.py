@@ -786,9 +786,13 @@ def _check_shape(M, n, m, square=False, symmetric=False, name="??"):
 
 # Utility function to check if a matrix is symmetric
 def _is_symmetric(M):
+
     M = np.atleast_2d(M)
+
     if isinstance(M[0, 0], inexact):
-        eps = finfo(M.dtype).eps
-        return ((M - M.T) < eps).all()
+        return (
+            np.linalg.norm(M - M.conj().T, 1)
+            <= 100 * np.spacing(np.linalg.norm(M, 1))
+        )
     else:
         return (M == M.T).all()
