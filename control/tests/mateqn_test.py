@@ -466,26 +466,24 @@ class TestMatrixEquations:
                 cdare(A, B, Qfs, R, S, E)
             with pytest.raises(ControlArgument):
                 cdare(A, B, Q, Rfs, S, E)
+
     def test_is_symmetric_scale_aware(self):
         M = np.array([
             [1e8, 1e8],
             [1e8 + 1e-8, 1e8]
         ])
-
         assert _is_symmetric(M)
+
     def test_is_symmetric_rejects_asymmetric(self):
         M = np.array([
             [1., 2.],
             [5., 1.]
         ])
-
         assert not _is_symmetric(M)
-
 
     def test_is_symmetric_complex_hermitian(self):
         M = np.array([
             [1., 2. + 1.j],
             [2. - 1.j, 3.]
         ])
-
         assert _is_symmetric(M)
