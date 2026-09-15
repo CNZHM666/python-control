@@ -39,7 +39,7 @@ from numpy.testing import assert_array_almost_equal, assert_array_less
 import pytest
 from scipy.linalg import eigvals, solve
 
-from control.mateqn import lyap, dlyap, care, dare,  _is_symmetric
+from control.mateqn import lyap, dlyap, care, dare, _is_symmetric
 from control.exception import ControlArgument, ControlDimension
 
 
