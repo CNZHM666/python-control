@@ -472,7 +472,8 @@ class TestMatrixEquations:
             [1e8, 1e8],
             [1e8 + 1e-8, 1e8]
         ])
-        assert _is_symmetric(M)
+        assert not _is_symmetric(M)
+        assert _is_symmetric(M,symmetric_kwargs={"rtol": 1e-12},)
 
     def test_is_symmetric_rejects_asymmetric(self):
         M = np.array([

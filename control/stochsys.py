@@ -83,6 +83,9 @@ def lqe(*args, **kwargs):
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
 
     Returns
     -------
@@ -133,6 +136,8 @@ def lqe(*args, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
+    symmetric_kwargs = kwargs.pop('symmetric_kwargs', {})
+
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
 
@@ -178,7 +183,7 @@ def lqe(*args, **kwargs):
 
     # Compute the result (dimension and symmetry checking done in care())
     P, E, LT = care(A.T, C.T, G @ QN @ G.T, RN, method=method,
-                    _Bs="C", _Qs="QN", _Rs="RN", _Ss="NN")
+                    _Bs="C", _Qs="QN", _Rs="RN", _Ss="NN", symmetric_kwargs=symmetric_kwargs)
     return LT.T, P, E
 
 
@@ -220,6 +225,9 @@ def dlqe(*args, **kwargs):
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot'
         first and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
 
     Returns
     -------
@@ -252,6 +260,8 @@ def dlqe(*args, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
+    symmetric_kwargs = kwargs.pop('symmetric_kwargs', {})
+
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
 
@@ -299,7 +309,7 @@ def dlqe(*args, **kwargs):
 
     # Compute the result (dimension and symmetry checking done in dare())
     P, E, LT = dare(A.T, C.T, G @ QN @ G.T, RN, method=method,
-                    _Bs="C", _Qs="QN", _Rs="RN", _Ss="NN")
+                    _Bs="C", _Qs="QN", _Rs="RN", _Ss="NN", symmetric_kwargs=symmetric_kwargs)
     return LT.T, P, E
 
 

@@ -81,7 +81,7 @@ def _warn_ill_conditioned_E(E):
 #
 
 
-def lyap(A, Q, C=None, E=None, method=None):
+def lyap(A, Q, C=None, E=None, method=None, **kwargs):
     """Solves the continuous-time Lyapunov equation.
 
     X = lyap(A, Q) solves
@@ -117,6 +117,9 @@ def lyap(A, Q, C=None, E=None, method=None):
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
 
     Returns
     -------
@@ -143,6 +146,12 @@ def lyap(A, Q, C=None, E=None, method=None):
        equations", Advances in Computational Mathematics, 8:33-48, 1998.
 
     """
+
+    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
+
+    # Make sure there were no extraneous keywords
+    if kwargs:
+        raise TypeError("unrecognized keyword(s): ", str(kwargs))
     # Decide what method to use
     method = _slycot_or_scipy(method)
     if method == 'slycot':
@@ -169,11 +178,11 @@ def lyap(A, Q, C=None, E=None, method=None):
     # Solve standard Lyapunov equation
     if C is None and E is None:
         # Check to make sure input matrices are the right shape and type
-        _check_shape(Q, n, n, square=True, symmetric=True, name="Q")
+        _check_shape(Q, n, n, square=True, symmetric=True, name="Q", symmetric_kwargs=symmetric_kwargs)
 
         if method == 'scipy':
-            # Solve the Lyapunov equation using SciPy
-            return sp.linalg.solve_continuous_lyapunov(A, -Q)
+                # Solve the Lyapunov equation using SciPy
+                return sp.linalg.solve_continuous_lyapunov(A, -Q)
 
         # Solve the Lyapunov equation by calling Slycot function sb03md
         with warnings.catch_warnings():
@@ -243,7 +252,7 @@ def lyap(A, Q, C=None, E=None, method=None):
     return X
 
 
-def dlyap(A, Q, C=None, E=None, method=None):
+def dlyap(A, Q, C=None, E=None, method=None, **kwargs):
     """Solves the discrete-time Lyapunov equation.
 
     X = dlyap(A, Q) solves
@@ -279,6 +288,9 @@ def dlyap(A, Q, C=None, E=None, method=None):
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
 
     Returns
     -------
@@ -316,6 +328,11 @@ def dlyap(A, Q, C=None, E=None, method=None):
        equation AX + XB = C", Comm. ACM, 15(9), pp. 820-826, 1972.
 
     """
+
+    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
+    # Make sure there were no extraneous keywords
+    if kwargs:
+        raise TypeError("unrecognized keyword(s): ", str(kwargs))
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -346,7 +363,7 @@ def dlyap(A, Q, C=None, E=None, method=None):
     # Solve standard Lyapunov equation
     if C is None and E is None:
         # Check to make sure input matrices are the right shape and type
-        _check_shape(Q, n, n, square=True, symmetric=True, name="Q")
+        _check_shape(Q, n, n, square=True, symmetric=True, name="Q", symmetric_kwargs=symmetric_kwargs)
 
         if method == 'scipy':
             # Solve the Lyapunov equation using SciPy
@@ -450,7 +467,7 @@ def dlyap(A, Q, C=None, E=None, method=None):
 #
 
 def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
-         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E"):
+         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E", **kwargs):
     """Solves the continuous-time algebraic Riccati equation.
 
     X, L, G = care(A, B, Q, R=None) solves
@@ -484,6 +501,9 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
     stabilizing : bool, optional
         If `method` is 'slycot', unstabilized eigenvalues will be returned
         in the initial elements of `L`.  Not supported for 'scipy'.
@@ -498,6 +518,13 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
         Gain matrix.
 
     """
+
+    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
+
+    # Make sure there were no extraneous keywords
+    if kwargs:
+        raise TypeError("unrecognized keyword(s): ", str(kwargs))
+
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -518,8 +545,8 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
     # Check to make sure input matrices are the right shape and type
     _check_shape(A, n, n, square=True, name=_As)
     _check_shape(B, n, m, name=_Bs)
-    _check_shape(Q, n, n, square=True, symmetric=True, name=_Qs)
-    _check_shape(R, m, m, square=True, symmetric=True, name=_Rs)
+    _check_shape(Q, n, n, square=True, symmetric=True, name=_Qs, symmetric_kwargs=symmetric_kwargs)
+    _check_shape(R, m, m, square=True, symmetric=True, name=_Rs, symmetric_kwargs=symmetric_kwargs)
 
     # Solve the standard algebraic Riccati equation
     if S is None and E is None:
@@ -606,7 +633,7 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
         return X, L, G
 
 def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
-         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E"):
+         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E", **kwargs):
     """Solves the discrete-time algebraic Riccati equation.
 
     X, L, G = dare(A, B, Q, R) solves
@@ -640,6 +667,9 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
         Set the method used for computing the result.  Current methods are
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
+    symmetric_kwargs : dict, optional
+        Keyword arguments passed to the SciPy symmetry/Hermitian check,
+        such as `atol` and `rtol`.
     stabilizing : bool, optional
         If `method` is 'slycot', unstabilized eigenvalues will be returned
         in the initial elements of `L`.  Not supported for 'scipy'.
@@ -654,6 +684,13 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
         Gain matrix.
 
     """
+
+    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
+
+    # Make sure there were no extraneous keywords
+    if kwargs:
+        raise TypeError("unrecognized keyword(s): ", str(kwargs))
+
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -674,8 +711,8 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
     # Check to make sure input matrices are the right shape and type
     _check_shape(A, n, n, square=True, name=_As)
     _check_shape(B, n, m, name=_Bs)
-    _check_shape(Q, n, n, square=True, symmetric=True, name=_Qs)
-    _check_shape(R, m, m, square=True, symmetric=True, name=_Rs)
+    _check_shape(Q, n, n, square=True, symmetric=True, name=_Qs, symmetric_kwargs=symmetric_kwargs)
+    _check_shape(R, m, m, square=True, symmetric=True, name=_Rs, symmetric_kwargs=symmetric_kwargs)
     if E is not None:
         _check_shape(E, n, n, square=True, name=_Es)
     if S is not None:
@@ -740,7 +777,8 @@ def _slycot_or_scipy(method):
 
 
 # Utility function to check matrix dimensions
-def _check_shape(M, n, m, square=False, symmetric=False, name="??"):
+def _check_shape(M, n, m, square=False, symmetric=False, name="??",
+                 symmetric_kwargs=None):
     """Check the shape and properties of a 2D array.
 
     This function can be used to check to make sure a 2D array_like has the
@@ -773,7 +811,7 @@ def _check_shape(M, n, m, square=False, symmetric=False, name="??"):
     if (square or symmetric) and M.shape[0] != M.shape[1]:
         raise ControlDimension("%s must be a square matrix" % name)
 
-    if symmetric and not _is_symmetric(M):
+    if symmetric and not _is_symmetric(M, symmetric_kwargs=symmetric_kwargs):
         raise ControlArgument("%s must be a symmetric matrix" % name)
 
     if M.shape[0] != n or M.shape[1] != m:
@@ -785,9 +823,13 @@ def _check_shape(M, n, m, square=False, symmetric=False, name="??"):
 
 
 # Utility function to check if a matrix is symmetric
-def _is_symmetric(M):
+def _is_symmetric(M, symmetric_kwargs=None):
     M = np.atleast_2d(M)
-    return (
-        sp.linalg.norm(M - M.conj().T, 1)
-        <= np.spacing(sp.linalg.norm(M, 1)) * 100
+    symmetric_kwargs = (
+        symmetric_kwargs.copy() if symmetric_kwargs else {}
     )
+
+    if np.iscomplexobj(M):
+        return sp.linalg.ishermitian(M, **symmetric_kwargs)
+    else:
+        return sp.linalg.issymmetric(M, **symmetric_kwargs)
