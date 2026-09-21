@@ -81,7 +81,7 @@ def _warn_ill_conditioned_E(E):
 #
 
 
-def lyap(A, Q, C=None, E=None, method=None, **kwargs):
+def lyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
     """Solves the continuous-time Lyapunov equation.
 
     X = lyap(A, Q) solves
@@ -147,11 +147,6 @@ def lyap(A, Q, C=None, E=None, method=None, **kwargs):
 
     """
 
-    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
-
-    # Make sure there were no extraneous keywords
-    if kwargs:
-        raise TypeError("unrecognized keyword(s): ", str(kwargs))
     # Decide what method to use
     method = _slycot_or_scipy(method)
     if method == 'slycot':
@@ -252,7 +247,7 @@ def lyap(A, Q, C=None, E=None, method=None, **kwargs):
     return X
 
 
-def dlyap(A, Q, C=None, E=None, method=None, **kwargs):
+def dlyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
     """Solves the discrete-time Lyapunov equation.
 
     X = dlyap(A, Q) solves
@@ -329,10 +324,6 @@ def dlyap(A, Q, C=None, E=None, method=None, **kwargs):
 
     """
 
-    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
-    # Make sure there were no extraneous keywords
-    if kwargs:
-        raise TypeError("unrecognized keyword(s): ", str(kwargs))
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -466,8 +457,8 @@ def dlyap(A, Q, C=None, E=None, method=None, **kwargs):
 # Riccati equation solvers care and dare
 #
 
-def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
-         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E", **kwargs):
+def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None, symmetric_kwargs=None,
+         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E", ):
     """Solves the continuous-time algebraic Riccati equation.
 
     X, L, G = care(A, B, Q, R=None) solves
@@ -518,12 +509,6 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
         Gain matrix.
 
     """
-
-    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
-
-    # Make sure there were no extraneous keywords
-    if kwargs:
-        raise TypeError("unrecognized keyword(s): ", str(kwargs))
 
     # Decide what method to use
     method = _slycot_or_scipy(method)
@@ -632,8 +617,8 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None,
         # the gain matrix G
         return X, L, G
 
-def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
-         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E", **kwargs):
+def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None, symmetric_kwargs=None,
+         _As="A", _Bs="B", _Qs="Q", _Rs="R", _Ss="S", _Es="E"):
     """Solves the discrete-time algebraic Riccati equation.
 
     X, L, G = dare(A, B, Q, R) solves
@@ -684,12 +669,6 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None,
         Gain matrix.
 
     """
-
-    symmetric_kwargs = kwargs.pop("symmetric_kwargs", {})
-
-    # Make sure there were no extraneous keywords
-    if kwargs:
-        raise TypeError("unrecognized keyword(s): ", str(kwargs))
 
     # Decide what method to use
     method = _slycot_or_scipy(method)
@@ -777,8 +756,7 @@ def _slycot_or_scipy(method):
 
 
 # Utility function to check matrix dimensions
-def _check_shape(M, n, m, square=False, symmetric=False, name="??",
-                 symmetric_kwargs=None):
+def _check_shape(M, n, m, square=False, symmetric=False, name="??", symmetric_kwargs=None):
     """Check the shape and properties of a 2D array.
 
     This function can be used to check to make sure a 2D array_like has the
@@ -824,12 +802,9 @@ def _check_shape(M, n, m, square=False, symmetric=False, name="??",
 
 # Utility function to check if a matrix is symmetric
 def _is_symmetric(M, symmetric_kwargs=None):
-    M = np.atleast_2d(M)
-    symmetric_kwargs = (
-        symmetric_kwargs.copy() if symmetric_kwargs else {}
-    )
+    if symmetric_kwargs is None:
+        symmetric_kwargs = {}
 
     if np.iscomplexobj(M):
         return sp.linalg.ishermitian(M, **symmetric_kwargs)
-    else:
-        return sp.linalg.issymmetric(M, **symmetric_kwargs)
+    return sp.linalg.issymmetric(M, **symmetric_kwargs)

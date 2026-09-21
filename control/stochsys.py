@@ -33,7 +33,7 @@ __all__ = ['lqe', 'dlqe', 'create_estimator_iosystem', 'white_noise',
 
 
 # contributed by Sawyer B. Fuller <minster@uw.edu>
-def lqe(*args, **kwargs):
+def lqe(*args, symmetric_kwargs=None, **kwargs):
     r"""lqe(A, G, C, QN, RN, [, NN])
 
     Continuous-time linear quadratic estimator (Kalman filter).
@@ -136,7 +136,6 @@ def lqe(*args, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
-    symmetric_kwargs = kwargs.pop('symmetric_kwargs', {})
 
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
@@ -188,7 +187,7 @@ def lqe(*args, **kwargs):
 
 
 # contributed by Sawyer B. Fuller <minster@uw.edu>
-def dlqe(*args, **kwargs):
+def dlqe(*args, symmetric_kwargs=None, **kwargs):
     r"""dlqe(A, G, C, QN, RN, [, N])
 
     Discrete-time linear quadratic estimator (Kalman filter).
@@ -260,7 +259,6 @@ def dlqe(*args, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
-    symmetric_kwargs = kwargs.pop('symmetric_kwargs', {})
 
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
