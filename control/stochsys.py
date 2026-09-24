@@ -84,8 +84,8 @@ def lqe(*args, symmetric_kwargs=None, **kwargs):
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
 
     Returns
     -------
@@ -136,7 +136,6 @@ def lqe(*args, symmetric_kwargs=None, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
-
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
 
@@ -225,8 +224,8 @@ def dlqe(*args, symmetric_kwargs=None, **kwargs):
         'slycot' and 'scipy'.  If set to None (default), try 'slycot'
         first and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
 
     Returns
     -------
@@ -259,7 +258,6 @@ def dlqe(*args, symmetric_kwargs=None, **kwargs):
 
     # Get the method to use (if specified as a keyword)
     method = kwargs.pop('method', None)
-
     if kwargs:
         raise TypeError("unrecognized keyword(s): ", str(kwargs))
 

@@ -118,8 +118,8 @@ def lyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
 
     Returns
     -------
@@ -146,7 +146,6 @@ def lyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
        equations", Advances in Computational Mathematics, 8:33-48, 1998.
 
     """
-
     # Decide what method to use
     method = _slycot_or_scipy(method)
     if method == 'slycot':
@@ -284,8 +283,8 @@ def dlyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
 
     Returns
     -------
@@ -323,7 +322,6 @@ def dlyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
        equation AX + XB = C", Comm. ACM, 15(9), pp. 820-826, 1972.
 
     """
-
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -493,8 +491,8 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None, symmetr
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
     stabilizing : bool, optional
         If `method` is 'slycot', unstabilized eigenvalues will be returned
         in the initial elements of `L`.  Not supported for 'scipy'.
@@ -509,7 +507,6 @@ def care(A, B, Q, R=None, S=None, E=None, stabilizing=True, method=None, symmetr
         Gain matrix.
 
     """
-
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
@@ -653,8 +650,8 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None, symmetric_kw
         'slycot' and 'scipy'.  If set to None (default), try 'slycot' first
         and then 'scipy'.
     symmetric_kwargs : dict, optional
-        Keyword arguments passed to the SciPy symmetry/Hermitian check,
-        such as `atol` and `rtol`.
+        Keyword arguments passed to `scipy.linalg.issymmetric` or
+        `scipy.linalg.ishermitian`.
     stabilizing : bool, optional
         If `method` is 'slycot', unstabilized eigenvalues will be returned
         in the initial elements of `L`.  Not supported for 'scipy'.
@@ -669,7 +666,6 @@ def dare(A, B, Q, R, S=None, E=None, stabilizing=True, method=None, symmetric_kw
         Gain matrix.
 
     """
-
     # Decide what method to use
     method = _slycot_or_scipy(method)
 
