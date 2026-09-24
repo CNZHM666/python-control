@@ -175,8 +175,8 @@ def lyap(A, Q, C=None, E=None, method=None, symmetric_kwargs=None):
         _check_shape(Q, n, n, square=True, symmetric=True, name="Q", symmetric_kwargs=symmetric_kwargs)
 
         if method == 'scipy':
-                # Solve the Lyapunov equation using SciPy
-                return sp.linalg.solve_continuous_lyapunov(A, -Q)
+            # Solve the Lyapunov equation using SciPy
+            return sp.linalg.solve_continuous_lyapunov(A, -Q)
 
         # Solve the Lyapunov equation by calling Slycot function sb03md
         with warnings.catch_warnings():
